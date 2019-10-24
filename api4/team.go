@@ -811,10 +811,10 @@ func searchTeams(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	var payload []byte
 	if props.Paginate {
-		payload = []byte(model.TeamListToJson(teams))
-	} else {
 		twc := &model.TeamsWithCount{Teams: teams, TotalCount: totalCount}
 		payload = model.TeamsWithCountToJson(twc)
+	} else {
+		payload = []byte(model.TeamListToJson(teams))
 	}
 
 	w.Write(payload)
