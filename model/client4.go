@@ -3852,7 +3852,17 @@ func (c *Client4) GetLdapGroups() ([]*Group, *Response) {
 	}
 	defer closeBody(r)
 
-	return GroupsFromJson(r.Body), BuildResponse(r)
+	ldapGroupGetToJson := func(data io.Reader) []*Group {
+		var d struct {
+			Count  int      `json:"count"`
+			Groups []*Group `json:"groups"`
+		}
+		err := json.NewDecoder(data).Decode(&d)
+		_ = err
+		return d.Groups
+	}
+
+	return ldapGroupGetToJson(r.Body), BuildResponse(r)
 }
 
 // LinkLdapGroup creates or undeletes a Mattermost group and associates it to the given LDAP group DN.
